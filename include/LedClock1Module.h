@@ -68,7 +68,7 @@ private:
 
 public:
   LedClock1Module();
-  
+  virtual void tick_100mS( uint8_t phase );
   virtual ~LedClock1Module();
   // Module identification
   virtual const char*   getId()    { return CLOCK1_MODULE; }

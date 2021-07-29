@@ -4,6 +4,7 @@
 /* Public */
 
 LedClock1Module::LedClock1Module() {
+  properties.tick_100mS_required = true;
   // Setup 7-segment indicator rows pins
   // Segment is enabled by LOW (inverse) level
   pinMode( SEGMENT_A_PIN, OUTPUT );
@@ -27,7 +28,7 @@ LedClock1Module::LedClock1Module() {
   displayBuffer[1] = DIGIT_DASH;
   displayBuffer[2] = DIGIT_DASH;
   displayBuffer[3] = DIGIT_DASH;
-  showDots = true;
+  //showDots = true;
 
   ticker.attach_ms( REFRESH_RATE, ticker_callback, this );
 
@@ -43,6 +44,11 @@ LedClock1Module::LedClock1Module() {
   });
 }
 
+void LedClock1Module::tick_100mS( uint8_t phase ) {
+  if( phase == 0 ) {
+    showDots = !showDots;
+  }
+}
 char LedClock1Module::digitToSymbol( unsigned char digit ){
   
   if( digit >= 48 && digit <= 57 ) {
