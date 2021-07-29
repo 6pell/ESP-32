@@ -1,0 +1,201 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%Title%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group mb-3">
+        <a href="#" id="lights_off_btn" class="btn btn-outline-danger mr-3" style="width:120px" role="button">Lights off</a>
+        <div class="form-control border-0"></div>
+        <div class="input-group-append">
+          <button id="settings_save" class="btn btn-outline-primary ml-4" type="button">Submit</button>
+        </div>
+      </div>
+      <div class="d-sm-flex flex-row">
+        <div class="input-group mb-3 mr-sm-2">
+          <button type="button" id="fx_btn" class="btn btn-outline-info mr-3" style="width:120px">Effect</button>
+          <select class="form-control custom-select" name="FxId">%FxId%</select>
+        </div>
+        <div class="input-group mb-3 ml-sm-2">
+        </div>
+      </div>
+      <div class="d-sm-flex flex-row">
+        <div id="FxBright" class="input-group mb-3 mr-sm-2">
+          <span class="input-group-text" style="width:120px">Bright</span>
+          <input type="range" class="form-control custom-range mt-2" min="0" max="255" step="5" name="FxBright" value="0">
+        </div>
+        <div id="FxColor" class="input-group mb-3 ml-sm-2">
+          <div id="color_btn"></div>
+          <input type="hidden" name="FxColor">
+          <select class="form-control custom-select ml-3" name="FxPalette">%FxPalette%</select>
+        </div>
+      </div>
+      <div class="d-sm-flex flex-row">
+        <div id="FxSpeed" class="input-group mb-3 mr-sm-2">
+          <span class="input-group-text" style="width:120px">Speed</span>
+          <input type="range" class="form-control custom-range mt-2" min="0" max="255" step="5" name="FxSpeed" value="0">
+        </div>
+        <div id="FxInt" class="input-group mb-3 ml-sm-2">
+          <span class="input-group-text" style="width:120px">Intensity</span>
+          <input type="range" class="form-control custom-range mt-2" min="0" max="255" step="5" name="FxInt" value="0">
+        </div>
+      </div>
+      <div class="d-sm-flex flex-row">
+        <span class="input-group-text">Hardware parameters</span>
+        <input type="text" class="form-control" name="Config" value='%Config%' placeholder="Enter the coniguration JSON">
+      </div>
+    </form>
+  </div>
+</div>
+<script src="/spiffs/colorpalettepicker.js"></script>
+<script>
+function initModule(){
+  // Submit button
+  $('#settings_save').on('click', function(){
+    $.ajax({
+      url: "save_settings",
+      type: "POST",
+      data: {
+        module_id: 'backlight',
+        config: $('input[name="Config"]').val(),
+        effect: makeEffectJson()
+      },
+      dataType: "text",
+      success: function(response) {
+        $("#settings_result").html(response);
+      },
+      error: function(response) {
+        $("#settings_result").html('Failed to apply settings');
+      }
+    });
+  });
+
+  // Effect button
+  $('#fx_btn').on('click', function(){
+    let msg = {
+      type: "cmd",
+      payload: "backlight adjust " + makeEffectJson()
+    };
+    if(webSocket !== null){
+      webSocket.send(JSON.stringify(msg));
+      $("#settings_result").html('');
+    }else{
+      $("#settings_result").html('Websocket connection is lost');
+    }
+  });
+
+  // Lights off button
+  $('#lights_off_btn').on('click',function(){
+    let msg = {
+      type: "cmd",
+      payload: "backlight off"
+    };
+    if(webSocket !== null){
+      webSocket.send(JSON.stringify(msg));
+      $("#settings_result").html('');
+    }else{
+      $("#settings_result").html('Websocket connection is lost');
+    }
+  });
+
+  // Effect ID select
+  $('select[name="FxId"]').on('change',function(){
+    let id = $('select[name="FxId"]').val();
+    if(id){
+      $.ajax({
+        url: '/getdata',
+        type: 'POST',
+        data:{
+          module_id:'backlight',
+          key:id
+        },
+        dataType: "json",
+        success: function(response,status){
+          populateEffectData(response);
+          $("#settings_result").html('');
+        },
+        error: function(response) {
+          $("#settings_result").html('Failed to obtain effect options');
+        }
+      });
+    }
+  });
+
+  // Sliders
+  $('#FxBright input[type=range]').on('input',function(){
+    $('#FxBright .input-group-text').html("Bright "+this.value);
+  });
+  $('#FxSpeed input[type=range]').on('input',function(){
+    $('#FxSpeed .input-group-text').html("Speed "+this.value);
+  });
+  $('#FxInt input[type=range]').on('input',function(){
+    $('#FxInt .input-group-text').html("Intensity "+this.value);
+  });
+
+  // Color pickers
+  $('#FxColor #color_btn').colorPalettePicker({
+    lines:4
+  });
+}
+
+function makeEffectJson(){
+  return JSON.stringify({
+    id: $('select[name="FxId"]').val(),
+    bright: Number($('input[name="FxBright"]').val()),
+    color: $('input[name="FxColor"]').val(),
+    speed: Number($('input[name="FxSpeed"]').val()),
+    int: Number($('input[name="FxInt"]').val()),
+    pal: $('select[name="FxPalette"]').val()
+  });
+}
+
+function populateEffectData(data) {
+  $('input[name="FxBright"]').val(data.bright);
+  $('#FxBright .input-group-text').html("Bright "+data.bright);
+
+  $('input[name="FxSpeed"]').val(data.speed);
+  $('#FxSpeed .input-group-text').html("Speed "+data.speed);
+
+  $('input[name="FxInt"]').val(data.int);
+  $('#FxInt .input-group-text').html("Intensity "+data.int);
+
+  $('input[name="FxColor"]').val(data.color);
+  $('#FxColor #color_btn').colorPalettePicker({
+    lines:4,
+    initialValue:hexToRgb(data.color),
+    onSelected:function(color){
+      $('input[name="FxColor"]').val(rgbToHex(color));
+    }
+  });
+
+  $('select[name="FxPalette"]').val(data.pal);
+}
+
+function rgbToHex(rgb){
+  let a = rgb.split("(")[1].split(")")[0];
+  a = a.split(",");
+  let b = a.map(function(x){
+    x = parseInt(x).toString(16);
+    return (x.length==1) ? "0"+x : x;
+  })
+  return "#"+b.join("");
+}
+
+function hexToRgb(hex) {
+  hex = hex.trim();
+  hex = hex[0] === '#' ? hex.substr(1) : hex;
+  var bigint = parseInt(hex, 16), h = [];
+  if (hex.length === 3) {
+    h.push((bigint >> 4) & 255);
+    h.push((bigint >> 2) & 255);
+  } else {
+    h.push((bigint >> 16) & 255);
+    h.push((bigint >> 8) & 255);
+  }
+  h.push(bigint & 255);
+  return 'rgb('+h.join()+')';
+}
+</script>

@@ -1,0 +1,42 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%TITLE%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Time zone</span>
+        </div>
+        <input type="text" name="timezone" class="form-control" placeholder="" value="%NTP_TZONE%">
+        <div class="input-group-append">
+          <button id="settings_submit" class="btn btn-outline-primary ml-4">Submit</button>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">NTP servers</span>
+        </div>
+        <input type="text" name="ntp1" class="form-control" placeholder="1st NTP server name or IP" value="%NTP1%">
+        <input type="text" name="ntp2" class="form-control" placeholder="2nd NTP server name or IP" value="%NTP2%">
+        <input type="text" name="ntp3" class="form-control" placeholder="3rd NTP server name or IP" value="%NTP3%">
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">GMT offset</span>
+        </div>
+        <input type="number" name="gmtoffset" class="form-control" placeholder="GMT time offset, seconds" value="%NTP_GMT%">
+        <div class="input-group-prepend">
+          <span class="input-group-text">DST offset</span>
+        </div>
+        <input type="number" name="dstoffset" class="form-control" placeholder="DST time offset, seconds" value="%NTP_DST%">
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  function initModule(){}
+</script>

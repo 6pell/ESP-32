@@ -1,0 +1,141 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%TITLE%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Log level</span>
+        </div>
+        <select class="form-control mr-1" name="loglevel">
+          <option value="silent" %LOG_0%>Silent</option>
+          <option value="fatal" %LOG_1%>Fatal</option>
+          <option value="error" %LOG_2%>Error</option>
+          <option value="warning" %LOG_3%>Warning</option>
+          <option value="notice" %LOG_4%>Notice</option>
+          <option value="trace" %LOG_5%>Trace</option>
+          <option value="verbose" %LOG_6%>Verbose</option>
+        </select>
+        <div class="form-control border-0 d-none d-sm-block ml-1"></div>
+        <div class="input-group-append">
+          <button id="settings_submit" class="btn btn-outline-primary ml-3">Submit</button>
+        </div>
+      </div>
+      <div class="d-sm-flex flex-row">
+        <div class="input-group mb-3 mr-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Sleep mode</span>
+          </div>
+          <select class="form-control" name="sleepmode">
+            <option value="dynamic" %SM_DYN%>Dynamic</option>
+            <option value="static" %SM_STA%>Static</option>
+          </select>
+        </div>
+        <div class="input-group mb-3 ml-sm-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Sleep time</span>
+          </div>
+          <input type="number" name="sleeptime" min="0" max="250" class="form-control" placeholder="sleep time, ms" value="%SM_TIME%">
+        </div>
+      </div>
+      <div class="d-sm-flex flex-row">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Optional parameters</span>
+          </div>
+          <input type="text" name="options" class="form-control" value='%OPTIONS%'>
+        </div>
+      </div>
+      <label class="mt-1">Manage non-core modules:</label>
+      %MANAGE_MD%
+    </form>
+    <label class="mt-3">Maintenance:</label>
+    <form enctype="multipart/form-data" id="upgrade_form">
+      <div class="d-sm-flex flex-row">
+        <div class="custom-file mb-3 mr-3">
+          <input type="file" class="custom-file-input" id="firmware">
+          <label class="custom-file-label" id="fw_name" for="firmware">Choose a firmware file...</label>
+        </div>
+        <div class="input-group mb-3">
+          <button id="firmware_submit" class="btn btn-outline-primary">Upgrade firmware</button>
+        </div>
+      </div>
+      <div class="d-sm-flex flex-row">
+        <div class="custom-file mb-3 mr-3">
+          <input type="file" class="custom-file-input" id="fs_image">
+          <label class="custom-file-label" id="fs_name" for="fs_image">Choose a file system image file...</label>
+        </div>
+        <div class="input-group mb-3">
+          <button id="fs_image_submit" class="btn btn-outline-primary">Upload file system image</button>
+        </div>
+      </div>
+    </form>
+    <label class="mt-1">Import/Export:</label>
+    <div class="d-sm-flex flex-row">
+      <div class="custom-file mb-3 mr-3">
+        <input type="file" class="custom-file-input" id="import_cfg">
+        <label class="custom-file-label" id="config_name" for="import_cfg">Choose a config file...</label>
+      </div>
+      <div class="input-group mb-3">
+        <button id="import_cfg_submit" class="btn btn-outline-success mr-3 mb-3">Import configuration</button>
+        <a href="/export_cfg" class="btn btn-outline-success mb-3" role="button">Export configuration</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function initModule(){
+  $("#firmware").on("change",onChangeFile);
+  $("#firmware_submit").on("click",function(){
+    let fdata = $("#firmware").prop('files')[0];
+    onSubmitFile("firmware",fdata);
+  });
+  $("#fs_image").on("change",onChangeFile);
+  $("#fs_image_submit").on("click",function(){
+    let fdata = $("#fs_image").prop('files')[0];
+    onSubmitFile("fs_image",fdata);
+  });
+  $("#import_cfg").on("change",onChangeFile);
+  $("#import_cfg_submit").on("click",function(){
+    let fdata = $("#import_cfg").prop('files')[0];
+    onSubmitFile("config",fdata);
+  });
+}
+// Show chosen file name
+function onChangeFile(){
+  const fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").html(fileName);
+}
+// Submit firmware or fs image
+function onSubmitFile(what,fdata){
+  const out = $('#settings_result');
+  if(fdata === undefined) return;
+
+  let form_data = new FormData();
+  form_data.append('file',fdata);
+  $.ajax({
+    url: '/upload',
+    beforeSend: function(xhr){
+      out.html('Uploading, please wait');
+      xhr.setRequestHeader('X-FileSize',fdata.size);
+      xhr.setRequestHeader('X-Module','core');
+      xhr.setRequestHeader('X-What',what);
+    },
+    type: 'POST',
+    data: form_data,
+    contentType: false,
+    processData: false,
+    dataType: "text",
+    success: function(response,status){
+      out.html(response);
+    },
+    error: function(xhr,status,error){
+      out.html(error);
+    }
+  });
+}
+</script>

@@ -1,0 +1,5 @@
+https://stackoverflow.com/questions/359788/how-to-execute-a-javascript-function-when-i-have-its-name-as-a-string?page=1&tab=votes#tab-top
+
+https://www.w3schools.com/jsref/dom_obj_all.asp
+https://www.w3schools.com/jsref/prop_node_textcontent.asp
+https://www.w3schools.com/jsref/prop_html_innerhtml.asp

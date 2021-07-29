@@ -1,0 +1,1 @@
+python decoder.py -p ESP32 -t xtensa-lx106-elf-addr2line.exe -e firmware.elf stacktrace.txt

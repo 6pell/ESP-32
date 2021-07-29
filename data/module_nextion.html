@@ -1,0 +1,28 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%Title%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Brightness</span>
+        </div>
+        <input type="number" min="0" max="99" name="defbright" class="form-control" placeholder="Brightness value" value="%NX_BRIGHT%">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Default page</span>
+        </div>
+        <input type="number" min="0" name="defpage" class="form-control" placeholder="Page index" value="%NX_PAGE%">
+        <div class="input-group-append">
+          <button id="settings_submit" class="btn btn-outline-primary ml-4">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  function initModule(){}
+</script>

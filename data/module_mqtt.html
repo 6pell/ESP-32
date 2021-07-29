@@ -1,0 +1,99 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%Title%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Client ID</span>
+        </div>
+        <input type="text" name="clientid" class="form-control" placeholder="client id" value="%MQ_TCLID%">
+        <div class="input-group-append">
+          <span class="input-group-text">= %MQ_VCLID%</span>
+          <button id="settings_submit" class="btn btn-outline-primary ml-4">Submit</button>
+        </div>
+      </div>
+
+      <div class="d-sm-flex">
+        <div class="flex-fill">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Broker IP</span>
+            </div>
+            <input type="text" name="host" class="form-control" placeholder="0.0.0.0" value="%MQ_HOST%">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Username</span>
+            </div>
+            <input type="text" name="user" class="form-control" placeholder="user" value="%MQ_USER%">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Reconnect time</span>
+            </div>
+            <input type="number" name="reconnect" class="form-control" placeholder="retry time (sec)" value="%MQ_RETRY%">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Device topic</span>
+            </div>
+            <input type="text" name="topic" class="form-control" placeholder="topic" value="%MQ_TOPIC%">
+          </div>
+        </div>
+
+        <div class="flex-fill">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Port</span>
+            </div>
+            <input type="number" name="port" class="form-control" placeholder="1883" value="%MQ_PORT%">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Password</span>
+            </div>
+            <input type="text" name="pwd" class="form-control" placeholder="pwd" value="%MQ_PWD%">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Telemetry period</span>
+            </div>
+            <input type="number" name="telemetry" class="form-control" placeholder="telemetry period (sec)" value="%MQ_TELE%">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Group topic</span>
+            </div>
+            <input type="text" name="grptopic" class="form-control" placeholder="group topic" value="%MQ_GTOPIC%">
+          </div>
+        </div>
+      </div>
+
+      <div class="d-sm-flex flex-row mb-3">
+        <span class="input-group-text">Command/State/Telemetry prefixes</span>
+        <div class="input-group">
+          <input type="text" name="cmnd" class="form-control" placeholder="command" value="%MQ_PCMND%">
+          <input type="text" name="stat" class="form-control" placeholder="statistics" value="%MQ_PSTAT%">
+          <input type="text" name="tele" class="form-control" placeholder="telemetry" value="%MQ_PTELE%">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Full topic</span>
+        </div>
+        <input type="text" name="fulltopic" class="form-control" value="%MQ_FTOPIC%">
+      </div>
+
+    </form>
+  </div>
+</div>
+<script>
+  function initModule(){}
+</script>

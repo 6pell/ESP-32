@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>ESP32 login</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/spiffs/bootstrap.min.css">
+  <script src="/spiffs/jquery-3.5.0.min.js"></script>
+  <script src="/spiffs/popper.min.js"></script>
+  <script src="/spiffs/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container mt-5">
+  <div class="jumbotron">
+    <h2>ESP32</h2>
+    <p id="msg_text">Please log in</p>
+    <form id="auth_form">
+      <div class="form-group">
+        <input id="user" type="text" class="form-control" name="user" placeholder="Username:">
+      </div>
+      <div class="form-group">
+        <input id="pass" type="password" class="form-control" name="pass" placeholder="Password:">
+      </div>
+      <button id="login_submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
+<script>
+$(document).ready(function(){
+  $("#login_submit").click(function(){
+    sendLoginForm();
+    return false;
+  });
+});
+
+function sendLoginForm() {
+  $.ajax({
+    url: "auth",
+    type: "POST",
+    data: $('#auth_form').serialize(),
+    dataType: "text",
+    success: function(response) {
+      if(response === "302root") {
+        window.location.replace("/");
+      } else {
+        $('#msg_text').html(response);
+        $('#user').val("");
+        $('#pass').val("");
+      }
+    },
+    error: function(response) {
+      $('#msg_text').html(response);
+    }
+  });
+}
+</script>
+
+</body>
+</html>

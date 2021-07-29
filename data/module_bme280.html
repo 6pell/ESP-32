@@ -1,0 +1,42 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%MTITLE%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Temperature scale</span>
+        </div>
+        <select class="form-control mr-2" name="scale">
+          <option value="C" %SCALE_C%>Celsius</option>
+          <option value="F" %SCALE_F%>Farenheit</option>
+        </select>
+        <div class="input-group-prepend">
+          <span class="input-group-text">Poll interval</span>
+        </div>
+        <input type="number" name="poll" class="form-control" placeholder="Sensor poll interval (sec)" min="0" max="65535" value="%POLLTIME%">
+        <div class="input-group-append">
+          <button id="settings_submit" class="btn btn-outline-primary ml-4">Submit</button>
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Temperature delta</span>
+        </div>
+        <input type="number" name="deltaT" class="form-control mr-2" placeholder="Temperature change delta" min="0" max="5" step="0.1" value="%DELTA_T%">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Humidity delta</span>
+        </div>
+        <input type="number" name="deltaH" class="form-control" placeholder="Humidity change delta" min="0" max="10" step="0.1" value="%DELTA_H%">
+      </div>
+
+    </form>
+  </div>
+</div>
+<script>
+  function initModule(){}
+</script>

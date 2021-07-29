@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="colorPicker.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="colorpalettepicker.js"></script>
+</head>
+<body>
+
+<div class="container mt-3">
+
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">Backlight settings</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group mb-3">
+        <a href="#" id="lights_off_btn" class="btn btn-outline-danger mr-3" style="width:130px" role="button">Lights off</a>
+        <div class="form-control border-0"></div>
+        <div class="input-group-append">
+          <button id="settings_submit" class="btn btn-outline-primary ml-4" type="button">Submit</button>
+        </div>
+      </div>
+      <div class="input-group mb-3" id="light_day">
+        <a href="#" id="light_btn" class="btn btn-outline-info mr-3" style="width:130px" role="button">Day mode</a>
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width:80px">&#9728 %BrightD%</span>
+        </div>
+        <input type="range" class="form-control custom-range mt-2 mr-3" min="0" max="255" step="5" name="BrightD" value="%BrightD%">
+        <select class="form-control custom-select mr-3" name="LightFxD">
+          %LightFxD%
+        </select>
+        <div id="color_btn"></div>
+        <input type="hidden" name="ColorD" value="%ColorD%">
+      </div>
+      <div class="input-group mb-4" id="light_night">
+        <a href="#" id="light_btn" class="btn btn-outline-info mr-3" style="width:130px" role="button">Night mode</a>
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width:80px">&#9728 %BrightN%</span>
+        </div>
+        <input type="range" class="form-control custom-range mt-2 mr-3" min="0" max="255" step="5" name="BrightN" value="%BrightN%">
+        <select class="form-control custom-select mr-3" name="LightFxN">
+          %LightFxN%
+        </select>
+        <div id="color_btn"></div>
+        <input type="hidden" name="ColorN" value="%ColorN%">
+      </div>
+
+
+      <div class="input-group mb-4" id="light_effect">
+        <a href="#" id="light_btn" class="btn btn-outline-info mr-3" style="width:130px" role="button">Effect</a>
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width:80px">&#9728 %BrightN%</span>
+        </div>
+        <input type="range" class="form-control custom-range mt-2 mr-3" min="0" max="255" step="5" name="BrightN" value="%BrightN%">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width:80px">&#9728 %BrightN%</span>
+        </div>
+        <input type="range" class="form-control custom-range mt-2 mr-3" min="0" max="255" step="5" name="BrightN" value="%BrightN%">
+        <select class="form-control custom-select mr-3" name="LightFxN">
+          <option>Effect 1</option>
+          <option>Effect 2</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Configuration</span>
+        </div>
+        <input type="text" class="form-control" name="Config" value='%Config%' placeholder="Enter the coniguration JSON">
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+</div>
+
+<script>
+$(document).ready(function(){
+
+  $('#day_mode_color').colorPalettePicker({
+    lines:4,
+    buttonPreviewName: 'day_color',
+    onSelected: function(color){
+      alert(color);
+    }
+  });
+  $('#night_mode_color').colorPalettePicker({
+    lines:4,
+    buttonPreviewName: 'night_color',
+    onSelected: function(color){
+      alert(color);
+    }
+  });
+
+});
+
+</script>
+
+</body>
+</html>

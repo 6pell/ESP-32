@@ -1,0 +1,256 @@
+MQTT status:
+  - connected / not
+  - Host
+MQTT Client DVES_6769CA
+MQTT Topic  KitchenRelay
+MQTT Group Topic    sonoffs
+MQTT Full Topic cmnd/KitchenRelay/
+MQTT Fallback Topic cmnd/DVES_6769CA_fb/
+
+OLED display, menu structure
+----------------------------
+
+1. Root is a JSON array that contains one or more menu objects.
+
+2. The menu object has a following fields:
+   "id":"settings"      // the root menu the id is "root"
+   "parent":"root"      // except the root menu that doesn't have a parent
+   "visible":true/false
+
+3. The menu object also has entry objects.
+
+4. Each entry object has a following fields:
+   "id":"abc"
+   "title":"Info"
+   "type":"link" || "text" || "cmd" || "action" || "number" || "choice"
+   "visible":true/false
+
+5. The entry of type "link" has extra fields:
+   "target":"<id>"      // where <id> is the menu id that should be shown in a result
+
+6. The entry of type "text" has extra fields:
+   "msg":"Some text"
+
+7. The entry of type "cmd" is a local command, handled like usual console commands.
+   It has extra fields:
+   "payload":"relays rel1 toggle"
+
+8. The entry of type "action", when selected, sends the payload to the head via MQTT.
+   Extra fields:
+   "payload":"some data to send"
+
+9. The entry of type number selects a number. Extra fields:
+   "min":0
+   "max":50
+   "step":5
+   "value":15
+
+10. The entry of type choice selects between choices.
+    Extra fileds:
+    a)an array of objects:
+    "label":"Option1"
+    "opt":"op1"
+    "label":"Option2"
+    "opt":"op2"
+
+    b)"value":"op1"
+
+ * Popup message with a limited time
+ * Load a completely new menu
+ * Change only a menu with some id
+ * Change only an entry with some id
+
+[
+  {
+    "id": "root",
+    "entries":[
+      {
+        "id":"boiler",
+        "title":"Boiler is OFF",
+        "text":"subtitle test",
+        "type":"cmd",
+        "payload":"relays rel1 toggle"
+      },
+      {
+        "id":"fan",
+        "title":"Air fan",
+        "type":"cmd",
+        "payload":"relays rel2 toggle"
+      },
+      {
+        "id":"options",
+        "title":"Options",
+        "type":"link"
+      }
+    ]
+  },
+  {
+    "id":"options",
+    "parent":"root",
+    "entries":[
+      {
+        "id":"info",
+        "title":"Info",
+        "type":"some text"
+      },
+      {
+        "id":"back",
+        "title":"Back",
+        "type":"link",
+        "target":"root"
+      }
+    ]
+  }
+]
+
+MenuType - number
+=================
+1. Initial state
+-----------
+|Previous  |
+|ITEM      |
+|Value: 10 |
+|          |
+|Next      |
+------------
+2. After press SELECT. UP/DOWN changes the value from <min> to <max> with <step>. SELECT ends the selection.
+-----------
+|ITEM      |
+|     9    |
+|    10    |
+|    11    |
+|          |
+------------
+3. End state. The new value is drawn. The executor.executeCommand() or maybe executor.sendValue() is called.
+-----------
+|Previous  |
+|ITEM      |
+|Value: 10 |
+|          |
+|Next      |
+------------
+
+MenuType - choice
+=================
+1. Initial state
+--------------
+|Previous    |
+|ITEM        |
+|Some choice |
+|            |
+|Next        |
+--------------
+2. After press SELECT. UP/DOWN changes the value from <min> to <max> with <step>. SELECT ends the selection.
+--------------
+|ITEM        |
+|Prev choice |
+|Sel choice  |
+|Next choice |
+|            |
+--------------
+3. End state. The new value is drawn. The executor.executeCommand() or maybe executor.sendValue() is called.
+--------------
+|Previous    |
+|ITEM        |
+|New choice  |
+|            |
+|Next        |
+--------------
+
+
+MQTT
+From device to server via broker
+Request  <prefix>/<deviceid>/getvalue <json contains a deviceid,moduleid,menuid, etc..>
+          cmnd     kitchen
+
+From server to device via broker
+Response <prefix>/<deviceid>/display editvalue <json contains a value,min,max,step,etc>
+          cmnd     kitchen
+
+From device to server via broker
+Request  <prefix>/<deviceid>/setvalue <json contains a deviceid,moduleid,menuid,new value etc..>
+          cmnd     kitchen
+
+From server to device via broker
+Response <prefix>/<deviceid>/display editdone <json contains a final result>
+          cmnd     kitchen
+
+JSON
+====
+An example of Number menu entry JSON data:
+{
+  "menuId":"xx",
+  "entryId":"yy",
+  "type":"number"
+  "value":3,
+  "min":1,
+  "max":10,
+  "step":1
+}
+
+A modified value JSON data:
+{
+  "menuId":"xx",
+  "entryId":"yy",
+  "value":3,
+}
+
+What fields may be edited on the UI
+===================================
+
+Menu
+====
+menuId
+type    - always the 'Menu'
+title
+
+Entry
+=====
+entryId
+type    - one of 'Entry', 'Command', 'Link'
+title
+text
+payload - command or link data
+
+
+--------------------------------------
+
+<div class="card" id="%ID%">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">Relays module settings</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group mb-3">
+        <div class="form-control border-0"></div>
+        <div class="input-group-append">
+          <button id="action-submit" class="btn btn-outline-primary ml-4" type="button">Submit</button>
+        </div>
+      </div>
+      <div class="input-group mb-2 relay-line">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Relay1 (rel1)</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter the relay entry JSON">
+      </div>
+    </form>
+  </div>
+</div>
+
+[
+  {
+    "alias":"boiler",
+    "pin":34,
+    "invert":true,
+    "persist":true
+  },
+  {
+    "alias":"boiler",
+    "pin":34,
+    "invert":true,
+    "persist":true
+  }
+]

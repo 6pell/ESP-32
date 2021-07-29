@@ -1,0 +1,100 @@
+<div class="card" id="%ID%">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%Title%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group mb-3">
+        <div class="form-control border-0"></div>
+        <div class="input-group-append">
+          <button id="action-submit" class="btn btn-outline-primary ml-4" type="button">Submit</button>
+        </div>
+      </div>
+      <div class="input-group mb-2 relay-line">
+        <div class="input-group-prepend">
+          <span id="label1" class="input-group-text">Relay1 (rel1)</span>
+        </div>
+        <input id="input1" type="text" class="form-control" placeholder="Enter the relay entry JSON">
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function initModule(){
+  // Submit
+  $("#action-submit").on("click", function(){
+    sendRelayData();
+  });
+  // Request the form data
+  $.ajax({
+    url: '/getdata',
+    type: 'POST',
+    data: {module_id:"relays", key:"RelayData"},
+    dataType: "json",
+    success: function(response,status){
+      populateRelayData(response);
+    },
+    error: function(xhr,status,error){
+      $("#settings_result").html(error);
+    }
+  });
+}
+
+function duplicateRow(){
+  let this_row = $(".relay-line:last");
+  let new_row = this_row.clone();
+  this_row.after(new_row);
+  new_row.find('input').val("");
+}
+
+function populateRelayData(data){
+  if(Array.isArray(data)) {
+    for (var i = 0; i < data.length; i++){
+      let s = JSON.stringify(data[i]);
+      if(i === 0){
+        $("#label1").html("Relay1 (rel1)");
+        $("#input1").val(s);
+      } else {
+        duplicateRow();
+        $(".relay-line:last #label1").html( `Relay${i+1} (rel${i+1})` );
+        $(".relay-line:last > #input1").val(s);
+      }
+    }
+  }
+}
+
+function sendRelayData(){
+  let result = [];
+  let total = $(".relay-line > input").length;
+  let count = 0;
+  $(".relay-line > input").each(function(index){
+    try {
+      let obj = JSON.parse($(this).val());
+      result.push(obj);
+      count += 1;
+      $(this).removeClass("border-danger");
+    }
+    catch(error){
+      $(this).addClass("border-danger");
+      return false;
+    }
+  });
+  if( total === count ) {
+    $.ajax({
+      url: '/setdata',
+      type: 'POST',
+      data: {module_id:"relays", key:"RelayData", value:JSON.stringify(result)},
+      dataType: "text",
+      success: function(response,status){
+        $("#settings_result").html(response);
+      },
+      error: function(xhr,status,error){
+        $("#settings_result").html(error);
+      }
+    });
+  }
+}
+</script>

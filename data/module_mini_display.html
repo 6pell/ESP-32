@@ -1,0 +1,167 @@
+<div class="card" id="%ID%">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%Title%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Default menu</span>
+        </div>
+        <input type="text" id="menu-default" class="form-control mr-2" placeholder="Enter the default menu/entry">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Values resolver topic</span>
+        </div>
+        <input type="text" id="menu-topic" class="form-control" placeholder="MQTT topic to resolve values">
+        <div class="input-group-append">
+          <button id="action-submit" class="btn btn-outline-primary ml-4" type="button">Submit</button>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <button class="btn btn-info mr-2" id="action-new-entry" type="button">Add entry</button>
+        </div>
+      </div>
+      <div class="input-group menu-line mb-2">
+        <input type="text" class="form-control mr-2" placeholder="Enter the menu entry JSON">
+        <div class="input-group-append">
+          <button class="btn btn-outline-primary action-up" type="button">&#9650</button>
+          <button class="btn btn-outline-primary action-down" type="button">&#9660</button>
+          <button class="btn btn-outline-danger action-del" type="button">Del</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function initModule(){
+  // Add new entry
+  $("#action-new-entry").on("click", function(){
+    duplicateRow();
+    applyRowOnClickActions();
+  });
+  // Submit
+  $("#action-submit").on("click", function(){
+    sendMenuData();
+  });
+  // Request the form data
+  $.ajax({
+    url: '/getdata',
+    type: 'POST',
+    data: {module_id:"display", key:"MenuData"},
+    dataType: "json",
+    success: function(response,status){
+      $("#menu-default").val(response.default),
+      $("#menu-topic").val(response.topic),
+      populateMenuData(response.menu);
+      applyRowOnClickActions();
+    },
+    error: function(xhr,status,error){
+      $("#settings_result").html(error);
+    }
+  });
+}
+
+function applyRowOnClickActions(){
+  // Move entry up
+  $(".action-up").each(function(index){
+    $(this).on("click", function(){
+      moveRowUp($(this));
+    });
+  });
+  // Move entry down
+  $(".action-down").each(function(index){
+    $(this).on("click", function(){
+      moveRowDown($(this));
+    });
+  });
+  // Delete entry
+  $(".action-del").each(function(index){
+    $(this).on("click", function(){
+      deleteRow($(this));
+    });
+  });
+}
+
+function deleteRow(el){
+  if( $(".menu-line").length > 1) {
+    el.closest(".menu-line").remove();
+  }
+}
+
+function duplicateRow(){
+  let this_row = $(".menu-line:last");
+  let new_row = this_row.clone();
+  this_row.after(new_row);
+  new_row.find('input').val("");
+}
+
+function moveRowUp(el){
+  let this_row = el.closest(".menu-line");
+  let prev_row = this_row.prev(".menu-line");
+  if( prev_row.length ) {
+    prev_row.before(this_row);
+  }
+}
+
+function moveRowDown(el){
+  let this_row = el.closest(".menu-line");
+  let next_row = this_row.next(".menu-line");
+  if( next_row.length ) {
+    next_row.after(this_row);
+  }
+}
+
+function populateMenuData(data){
+  if(Array.isArray(data)) {
+    for (var i = 0; i < data.length; i++){
+      let s = JSON.stringify(data[i]);
+      if(i === 0){
+        $(".menu-line > input").val(s);
+      } else {
+        duplicateRow();
+        $(".menu-line:last > input").val(s);
+      }
+    }
+  }
+}
+
+function sendMenuData(){
+  let result = {
+    default: $("#menu-default").val(),
+    topic: $("#menu-topic").val(),
+    menu: []
+  };
+  let total = $(".menu-line > input").length;
+  let count = 0;
+  $(".menu-line > input").each(function(index){
+    try {
+      let obj = JSON.parse($(this).val());
+      result.menu.push(obj);
+      count += 1;
+      $(this).removeClass("border-danger");
+    }
+    catch(error){
+      $(this).addClass("border-danger");
+      return false;
+    }
+  });
+  if( total === count ) {
+    $.ajax({
+      url: '/setdata',
+      type: 'POST',
+      data: {module_id:"display", key:"MenuData", value:JSON.stringify(result)},
+      dataType: "text",
+      success: function(response,status){
+        $("#settings_result").html(response);
+      },
+      error: function(xhr,status,error){
+        $("#settings_result").html(error);
+      }
+    });
+  }
+}
+</script>

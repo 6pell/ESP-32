@@ -1,0 +1,32 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%TITLE%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="d-sm-flex flex-sm-row-reverse">
+        <div class="d-flex mb-3 mb-sm-0">
+	        <button id="settings_submit" class="btn btn-outline-primary ml-auto">Submit</button>
+        </div>
+        <div class="input-group mb-0 mb-sm-0">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Hold value time</span>
+          </div>
+          <input type="number" name="hold" class="form-control mr-sm-4" placeholder="Value hold time (sec)" min="0" max="65535" value="%HOLD%">
+        </div>
+        <div class="input-group mb-3 mb-sm-0">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Pin number</span>
+          </div>
+          <input type="number" name="pin" class="form-control mr-sm-4" placeholder="Pin number" min="1" max="39" value="%PIN%">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  function initModule(){}
+</script>

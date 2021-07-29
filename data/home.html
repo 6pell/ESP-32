@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>%WS_NAME% web config</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/spiffs/bootstrap.min.css">
+  <link rel="stylesheet" href="/spiffs/custom.css">
+  <script src="/spiffs/jquery-3.5.0.min.js"></script>
+  <script src="/spiffs/popper.min.js"></script>
+  <script src="/spiffs/bootstrap.min.js"></script>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand bg-primary navbar-dark">
+  <div class="navbar-brand">%WS_NAME%</div>
+  <ul class="navbar-nav">
+    <li class="nav-item" id="item_status">
+      <a class="nav-link" id="menu_status" href="#">Status</a>
+    </li>
+    <li class="nav-item dropdown" id="item_modules">
+      <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Modules</a>
+      <div class="dropdown-menu" id="menu_modules"></div>
+    </li>
+    <li class="nav-item" id="item_console">
+      <a class="nav-link" id="menu_console" href="#">Console</a>
+    </li>
+  </ul>
+  <span id="app_status" class="ml-auto text-warning"></span>
+</nav>
+<!-- Module/Content holder -->
+<div id="module_holder" class="container mt-3"></div>
+
+<script>
+var webSocket = null;
+
+$(document).ready(function(){
+  // Build the navbar dropdown with a list of modules
+  $.ajax({
+    url: "modules",
+    type: "POST",
+    dataType: "json",
+    success: function(response){
+      buildModulesDropdown(response, $('#menu_modules'));
+    }
+  });
+  // Navbar 'status' clcik
+  $("#menu_status").click(
+    function(){
+      loadStatus($("#module_holder"));
+      return false;
+    }
+  );
+  // Navbar 'console' click
+  $("#menu_console").click(
+     function(){
+       loadConsole($("#module_holder"));
+       return false;
+     }
+   );
+  // Auto show the 'status' page
+  loadStatus($("#module_holder"));
+  // Open a websocket
+  webSocket = new WebSocket("ws://" + window.location.hostname );
+  webSocket.onopen = function(){};
+  webSocket.onmessage = function(event){
+    var msg = JSON.parse(event.data);
+    switch(msg.type){
+      case 'console':
+        updateConsoleLog(msg.payload);
+        break;
+      case 'status':
+        updateStatusCard(msg.card, msg.html);
+        break;
+    }
+  };
+  webSocket.onclose = function(event){
+    $("#app_status").val("Websocket is closed, code=" + event.code + " reason=" + event.reason);
+  };
+  webSocket.onerror = function(error){
+    $("#app_status").val("Websocket error: " + error.message);
+  };
+});
+
+// Catch all clicks, handle navbar modules dropdown clicks
+$(document).click(function(){
+  $(event.target).closest(".module-link").each(function(){
+    // "this" is your "clickable" clicked
+    loadModule(this.id, $("#module_holder"));
+  });
+});
+
+function loadConsole(container){
+  $.ajax({
+    url: "console",
+    type: "POST",
+    dataType: "html",
+    success: function(response){
+      setContentHtml(container,response,true);
+      setActiveMenu($("#menu_console"));
+      // Send a 'reload' console command via websocket
+      var msg = new Object();
+      msg.type = "console";
+      msg.what = "reload";
+      webSocket.send(JSON.stringify(msg));
+      // Handle console keyboard input
+      $("#console_form").submit(function(){
+        // send json message
+        var msg = new Object();
+        msg.type = "cmd";
+        msg.payload = $("#console_input").val();
+        webSocket.send(JSON.stringify(msg));
+        // clean console input
+        $("#console_input").val('');
+        return false;
+      });
+    }
+  });
+}
+
+function loadModule(module_id, container){
+  $.ajax({
+    url: "module",
+    type: "POST",
+    data: 'module_id=' + module_id,
+    dataType: "html",
+    success: function(response){
+      setContentHtml(container,response,false);
+      if(typeof initModule === "function") {
+        initModule();
+      }
+      setActiveMenu($("#menu_modules"));
+      $("#settings_submit").click(function(){
+        sendSettingsForm(module_id, $("#settings_form"), $("#settings_result"));
+        return false;
+      });
+    },
+    error: function(xhr) {
+      $('.fix-checkbox').remove();
+      $("#settings_result").html(xhr.responseText);
+    }
+  });
+}
+
+function loadStatus(container){
+  $.ajax({
+    url: "status",
+    type: "POST",
+    dataType: "html",
+    success: function(response){
+      setContentHtml(container,response,false);
+      setActiveMenu($("#menu_status"));
+    }
+  });
+}
+
+function buildModulesDropdown(data, dropdown){
+  dropdown.html('');
+  $.each(data, function(i, item){
+    dropdown.append('<a class="dropdown-item module-link" id="' + item.id + '" href="#">' + item.name + '</a>');
+  });
+}
+
+function fixCheckboxes(form){
+  // For each unchecked checkbox on the form...
+  form.find($("input:checkbox:not(:checked)")).each(function(index){
+    // Create a hidden field with the same name as the checkbox
+    var input = $('<input />');
+    input.addClass('fix-checkbox');
+    input.attr('type', 'hidden');
+    input.attr('name', $(this).attr("name"));
+    input.attr('value', "false");
+    // append it to the form
+    form.append(input);
+  });
+}
+
+function sendSettingsForm(module_id, form, result) {
+  fixCheckboxes(form);
+  $.ajax({
+    url: "save_settings",
+    type: "POST",
+    data: form.serialize() + "&module_id=" + module_id,
+    dataType: "text",
+    success: function(response) {
+      $('.fix-checkbox').remove();
+      result.html(response);
+    },
+    error: function(response) {
+      $('.fix-checkbox').remove();
+      result.html('Failed to apply settings');
+    }
+  });
+}
+
+function setActiveMenu(menu_id){
+  $(".nav-item").each(function(){
+    $(this).removeClass("active");
+  });
+  menu_id.closest('li').addClass("active");
+}
+
+function setContentHtml(container,response,wide){
+  var clazz = wide ? "container-fluid mt-3" : "container mt-3";
+  container.attr( "class", clazz );
+  container.html(response);
+}
+
+function togglePassword(field_id){
+  //var field = $(field_id);
+  var x = document.getElementById(field_id);
+  if( x.type === "password" ) {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+
+function updateConsoleLog(data){
+  var out = $("#console_output");
+  if(out.length){
+    out.val(data);
+    out.scrollTop(out[0].scrollHeight-out.height());
+  }
+}
+
+function updateStatusCard(card,data){
+  var out = $('#'+card+".card");
+  if(out.length){
+    out.html(data);
+  }
+}
+
+</script>
+</body>
+</html>

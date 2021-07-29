@@ -1,0 +1,66 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%MTITLE%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+    <div class="d-sm-flex">
+      <div class="d-flex mb-3 order-sm-3">
+	    <button id="settings_submit" class="btn btn-outline-primary ml-auto">Submit</button>
+   	  </div>
+      <div class="input-group mb-3 order-sm-1">
+        <div class="input-group-prepend">
+          <span class="input-group-text">App ID</span>
+        </div>
+        <input type="text" name="appid" class="form-control" value="%APP_ID%">
+      </div>
+      <div class="input-group mb-3 order-sm-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Auto update</span>
+        </div>
+        <input type="number" name="autoupd" class="form-control" placeholder="Auto update interval (min)" min="0" step="10" placeholder="0" value="%UPD%">
+      </div>
+	  </div>
+    <div class="d-sm-flex">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text option-name">Latitude</span>
+        </div>
+        <input type="number" name="lat" class="form-control" value="%LAT%">
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text option-name">Longitude</span>
+        </div>
+        <input type="number" name="lon" class="form-control" value="%LON%">
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text option-name">Exclude</span>
+        </div>
+        <input type="textr" name="exclude" class="form-control" value="%EXCLUDE%">
+      </div>
+	  </div>
+    <div class="d-sm-flex">
+      <div class="input-group mb-3 mb-sm-0">
+        <div class="input-group-prepend">
+          <span class="input-group-text option-name">Language code</span>
+        </div>
+        <input type="text" name="lang" class="form-control" value="%LANG%">
+      </div>
+      <div class="input-group mb-3 mb-sm-0">
+        <div class="input-group-prepend">
+          <span class="input-group-text option-name">Units</span>
+        </div>
+        <select class="form-control" name="units">
+          <option value="M" %UNITS_M%>Metric</option>
+          <option value="I" %UNITS_I%>Imperial</option>
+        </select>
+      </div>
+	  </div>
+    </form>
+  </div>
+</div>

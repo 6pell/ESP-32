@@ -1,0 +1,48 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%Title%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Device name</span>
+        </div>
+        <input type="text" name="name" class="form-control mr-2" placeholder="Enter a device name" value="%WS_NAME%">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Port number</span>
+        </div>
+        <input type="number" name="port" class="form-control" placeholder="Enter a port number" value="%WS_PORT%">
+        <div class="input-group-append">
+          <button id="settings_submit" class="btn btn-outline-primary ml-4">Submit</button>
+        </div>
+      </div>
+      <label for="Auth">Authentication:</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <input type="checkbox" name="auth" value="true" %WS_AUTH%>
+            <input type="hidden" name="auth" value="false">
+          </div>
+        </div>
+        <div class="input-group-prepend">
+          <span class="input-group-text">Username</span>
+        </div>
+        <input type="text" name="user" class="form-control" placeholder="Enter a username" value="%WS_USER%">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Password</span>
+        </div>
+        <input type="password" id="pwd1" name="pwd" class="form-control" placeholder="Enter a password" value="%WS_PWD%">
+        <div class="input-group-append">
+          <button class="btn btn-outline-primary" type="button" onclick="togglePassword('pwd1')">[ ]</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  function initModule(){}
+</script>

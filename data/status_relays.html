@@ -1,0 +1,25 @@
+<div class="card-header bg-info text-light">Relays module</div>
+<div class="card-body">
+  <div class="row">
+    <div class="col mt-1">
+      <a href="#" class="btn btn-block %ST1%" role="button" onclick="onRelayClick()">%ID1%</a>
+      <a href="#" class="btn btn-block %ST3%" role="button" onclick="onRelayClick()">%ID3%</a>
+      <a href="#" class="btn btn-block %ST5%" role="button" onclick="onRelayClick()">%ID5%</a>
+      <a href="#" class="btn btn-block %ST7%" role="button" onclick="onRelayClick()">%ID7%</a>
+    </div>
+    <div class="col mt-1">
+      <a href="#" class="btn btn-block %ST2%" role="button" onclick="onRelayClick()">%ID2%</a>
+      <a href="#" class="btn btn-block %ST4%" role="button" onclick="onRelayClick()">%ID4%</a>
+      <a href="#" class="btn btn-block %ST6%" role="button" onclick="onRelayClick()">%ID6%</a>
+      <a href="#" class="btn btn-block %ST8%" role="button" onclick="onRelayClick()">%ID8%</a>
+    </div>
+  </div>
+</div>
+<script>
+function onRelayClick(){
+  var msg = new Object();
+  msg.type = "cmd";
+  msg.payload = "relays " + $(event.target).text() + " toggle";
+  if(webSocket !== null) webSocket.send(JSON.stringify(msg));
+}
+</script>

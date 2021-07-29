@@ -1,0 +1,96 @@
+<div class="card">
+  <div class="card-header bg-secondary">
+    <div class="d-flex">
+      <span class="text-light">%Title%</span>
+      <span id="settings_result" class="ml-auto text-warning"></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="settings_form">
+      <div class="d-sm-flex flex-sm-row-reverse">
+        <div class="d-flex mb-3">
+	        <button id="settings_submit" class="btn btn-outline-primary ml-auto">Submit</button>
+    	  </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Hostname</span>
+          </div>
+          <input type="text" name="hostname" class="form-control" placeholder="WiFi hostname" value="%WF_THOST%">
+          <div class="input-group-append">
+            <span class="input-group-text mr-sm-4">= %WF_VHOST%</span>
+          </div>
+        </div>
+      </div>
+      <div class="d-sm-flex">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Access point 1</span>
+          </div>
+          <input type="text" name="ssid1" class="form-control" placeholder="Enter an access point SSID" value="%SSID1%">
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" id="pwd1" name="pwd1" class="form-control" placeholder="Enter a password" value="%PWD1%">
+          <div class="input-group-append">
+            <button class="btn btn-outline-primary" type="button" onclick="togglePassword('pwd1')">[ ]</button>
+          </div>
+        </div>
+      </div>
+      <div class="d-sm-flex">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Access point 2</span>
+          </div>
+          <input type="text" name="ssid2" class="form-control" placeholder="Enter an access point SSID" value="%SSID2%">
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" id="pwd2" name="pwd2" class="form-control" placeholder="Enter a password" value="%PWD2%">
+          <div class="input-group-append">
+            <button class="btn btn-outline-primary" type="button" onclick="togglePassword('pwd2')">[ ]</button>
+          </div>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">WiFi config method</span>
+        </div>
+        <select class="form-control" name="cfgmethod">
+          <option value="Restart" %WF_RST%>Restart the device</option>
+          <option value="Manager" %WF_MGR%>Start WiFi manager (192.168.4.1)</option>
+          <option value="Retry" %WF_RETRY%>Retry other access point (AP1/AP2)</option>
+          <option value="Wait" %WF_WAIT%>Retry the same access point</option>
+        </select>
+      </div>
+      <div class="d-sm-flex">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">IP address</span>
+          </div>
+          <input type="text" name="ipaddr" class="form-control" placeholder="Leave empty to use DHCP" value="%IP_ADDR%">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Subnet mask</span>
+          </div>
+          <input type="text" name="ipmask" class="form-control" placeholder="0.0.0.0" value="%IP_MASK%">
+        </div>
+      </div>
+      <div class="d-sm-flex">
+        <div class="input-group mb-3 mb-sm-0">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Gateway</span>
+          </div>
+          <input type="text" name="ipgate" class="form-control" placeholder="0.0.0.0" value="%IP_GATE%">
+        </div>
+        <div class="input-group mb-3 mb-sm-0">
+          <div class="input-group-prepend">
+            <span class="input-group-text">DNS server</span>
+          </div>
+          <input type="text" name="ipdns" class="form-control" placeholder="0.0.0.0" value="%IP_DNS%">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  function initModule(){}
+</script>
