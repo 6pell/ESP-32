@@ -23,11 +23,10 @@ LedClock1Module::LedClock1Module() {
 
   clearDisplay();
 
-
-  displayBuffer[0] = 1;
-  displayBuffer[1] = 1;
-  displayBuffer[2] = 1;
-  displayBuffer[3] = 1;
+  displayBuffer[0] = DIGIT_DASH;
+  displayBuffer[1] = DIGIT_DASH;
+  displayBuffer[2] = DIGIT_DASH;
+  displayBuffer[3] = DIGIT_DASH;
   showDots = true;
 
   ticker.attach_ms( REFRESH_RATE, ticker_callback, this );
@@ -45,10 +44,13 @@ LedClock1Module::LedClock1Module() {
 }
 
 char LedClock1Module::digitToSymbol( unsigned char digit ){
+  
   if( digit >= 48 && digit <= 57 ) {
     return digit - 48;
-  }else{
+  } else if(digit == '-'){
     return 10;
+  } else {
+    return 11;
   }
 };
 

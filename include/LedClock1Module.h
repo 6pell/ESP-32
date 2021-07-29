@@ -6,7 +6,8 @@ class LedClock1Module : public Module {
 
 private:
   const int      REFRESH_RATE = 3;
-  const uint8_t  DIGIT_OFF = 10;
+  const uint8_t  DIGIT_OFF = 11;
+  const char     DIGIT_DASH = 10;
 
   // -- Pin definitions ---------------------------
   const uint8_t  SEGMENT_A_PIN  = 32;
@@ -23,7 +24,7 @@ private:
   const uint8_t  DIGIT_4_PIN    = 27;
 
   // -- Symbol to pin values conversion table -----
-  const uint8_t  SYMBOL_TO_BITSET[11] = {
+  const uint8_t  SYMBOL_TO_BITSET[12] = {
     0b00000011,                           // 0
     0b10011111,                           // 1
     0b00100101,                           // 2
@@ -34,6 +35,7 @@ private:
     0b00011111,                           // 7
     0b00000001,                           // 8
     0b00001001,                           // 9
+    0b11111101,                           // -
     0b11111111                            // OFF
   };
 
