@@ -311,11 +311,12 @@ void WifiModule::checkConnection() {
         break;
     }
     if( connectionRetries ) {
-      if( (getConfigMethodOption() != Config::WIFI_WAIT) && (connectionRetries == (Config::WIFI_CONNECT_RETRIES / 2)) ) {
-        reconnect( TOGGLE_AP );       // Select alternate SSID
+      if( (getConfigMethodOption() != Config::WIFI_WAIT) && (connectionRetries % 2 == 0) ) {
+        reconnect( CURRENT_AP );       // Select alternate SSID
       } else {
-        reconnect( CURRENT_AP );      // Select default SSID
+        reconnect( TOGGLE_AP);      // Select default SSID
       }
+
       checkConnectionDelayCounter = Config::WIFI_CONNECT_DELAY;
       connectionRetries--;
     } else {
