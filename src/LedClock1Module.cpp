@@ -35,7 +35,7 @@ LedClock1Module::LedClock1Module() {
     if( strcmp( event.module->getId(), RTC_MODULE ) == 0 ) {      
       String datetime = event.payload;
       int i = datetime.indexOf( 'T' );
-      displayBuffer[0] = digitToSymbol(datetime.charAt(i + 1)); // getRealTimeDigit(1,datetime,i);
+      displayBuffer[0] = digitToSymbol(datetime.charAt(i + 1));
       displayBuffer[1] = digitToSymbol(datetime.charAt(i + 2));
       displayBuffer[2] = digitToSymbol(datetime.charAt(i + 4));
       displayBuffer[3] = digitToSymbol(datetime.charAt(i + 5));
@@ -86,7 +86,7 @@ void LedClock1Module::showSymbol( uint8_t symbol, uint8_t position ) {
       case 2:
         break;
       default:
-        symbol = DIGIT_OFF;
+        symbol = DIGIT_DASH;
     }
   }
 

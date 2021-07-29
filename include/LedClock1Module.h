@@ -73,7 +73,6 @@ public:
   // Module identification
   virtual const char*   getId()    { return CLOCK1_MODULE; }
   virtual const char*   getName()  { return Messages::TITLE_CLOCK1_MODULE; }
-  //unsigned char useTimeStatus();
 
 private:
   void clearDisplay();
