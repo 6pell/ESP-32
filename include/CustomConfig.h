@@ -27,6 +27,9 @@
 // Includes the ST7796 320x480 TFT display module into the project.
 //#define USE_ST7796_MODULE
 
+// Includes Infrared remote module into the project.
+#define USE_INFRARED_TRANSMITTER_MODULE
+
 // Includes the onboard status LED module into the project.
 #define USE_STATUS_LED_MODULE
 

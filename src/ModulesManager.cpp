@@ -36,9 +36,13 @@
 #ifdef USE_RELAYS_MODULE
   #include "RelaysModule.h"
 #endif
+#ifdef USE_INFRARED_TRANSMITTER_MODULE
+  #include "InfraredTransmitter.h"
+#endif
 #ifdef USE_ST7796_MODULE
   #include "ST7796Module.h"
 #endif
+
 
 /* Extern */
 
@@ -163,6 +167,9 @@ Module* ModulesManager::create( const String& module ) {
   #endif
   #ifdef USE_ST7796_MODULE
     CASE( ST7796_MODULE ):            return new ST7796Module();
+  #endif
+  #ifdef USE_INFRARED_TRANSMITTER_MODULE
+    CASE( INFRARED_MODULE ):          return new InfraredModule();
   #endif
   #ifdef USE_STATUS_LED_MODULE
     CASE( STATUS_LED_MODULE ):        return new StatusLedModule();

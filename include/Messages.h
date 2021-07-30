@@ -20,6 +20,7 @@ namespace Messages {
   constexpr const char* TITLE_RELAYS_MODULE           = "Relays (x8) shield";
   constexpr const char* TITLE_ST7796_MODULE           = "ST7796 display";
   constexpr const char* TITLE_STATUS_LED_MODULE       = "Status LED";
+  constexpr const char* TITLE_INFRARED_TRANSMITTER    = "Infrared status:";
 
   constexpr const char* AM_312_MOTION                 = "Motion: %s";
   constexpr const char* BME1750_LUX                   = "Lux: %s";

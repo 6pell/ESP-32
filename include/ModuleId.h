@@ -20,6 +20,7 @@ constexpr const char* MINI_DISPLAY_MODULE     = "display";
 constexpr const char* OPEN_WEATHER_MAP_MODULE = "weather";
 constexpr const char* RELAYS_MODULE           = "relays";
 constexpr const char* ST7796_MODULE           = "st7796";
+constexpr const char* INFRARED_MODULE       = "infrared";
 constexpr const char* STATUS_LED_MODULE       = "led";
 
 // Warning!
@@ -71,6 +72,9 @@ static constexpr const char* const CUSTOM_MODULE_IDS[] = {
   #ifdef USE_ST7796_MODULE
     ST7796_MODULE,
   #endif
+  #ifdef USE_INFRARED_TRANSMITTER_MODULE
+    INFRARED_MODULE,
+  #endif
   #ifdef USE_STATUS_LED_MODULE
     STATUS_LED_MODULE
   #endif
@@ -103,6 +107,9 @@ static constexpr const char* const CUSTOM_MODULE_NAMES[] = {
   #endif
   #ifdef USE_ST7796_MODULE
     Messages::TITLE_ST7796_MODULE,
+  #endif
+  #ifdef USE_INFRARED_TRANSMITTER_MODULE
+    Messages::TITLE_INFRARED_TRANSMITTER,
   #endif
   #ifdef USE_STATUS_LED_MODULE
     Messages::TITLE_STATUS_LED_MODULE
